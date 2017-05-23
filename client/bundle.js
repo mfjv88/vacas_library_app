@@ -9549,6 +9549,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var App = function (_React$Component) {
   _inherits(App, _React$Component);
 
+  // Initial built-in React functions
   function App() {
     _classCallCheck(this, App);
 
@@ -9556,19 +9557,26 @@ var App = function (_React$Component) {
 
     _this.state = {
       showMovies: false,
-      movies: [{ id: 1, title: 'Raiders of the Ark', director: 'Whoever' }, { id: 2, title: 'Return of the Jedi', director: 'George Lucas' }, { id: 3, title: 'Jaws', director: 'Steven Spielberg' }, { id: 4, title: 'Interstellar', director: 'Christopher Nolan' }]
+      // movies: [
+      //   {id: 1, title: 'Raiders of the Ark', director: 'Whoever'},
+      //   {id: 2, title: 'Return of the Jedi', director: 'George Lucas'},
+      //   {id: 3, title: 'Jaws', director: 'Steven Spielberg'},
+      //   {id: 4, title: 'Interstellar', director: 'Christopher Nolan'}
+      // ]
+      movies: []
     };
     return _this;
   }
 
+  // Functions for App Component
+
+
   _createClass(App, [{
     key: '_getMovies',
     value: function _getMovies() {
-
       return this.state.movies.map(function (movie) {
-        console.log(movie);
-        return _react2.default.createElement(_movies2.default, {
-          director: movie.director, title: movie.title, key: movie.id });
+        // console.log(movie);
+        return _react2.default.createElement(_movies2.default, { director: movie.director, title: movie.title, key: movie.id });
       });
     }
   }, {
@@ -9661,6 +9669,67 @@ var App = function (_React$Component) {
         ),
         moviesNodes
       );
+    }
+  }, {
+    key: 'componentWillMount',
+    value: function componentWillMount() {
+      this._fetchMovies();
+    }
+  }, {
+    key: '_fetchMovies',
+    value: function _fetchMovies() {
+      var _this2 = this;
+
+      // jQuery.ajax({
+      //   method: 'GET',
+      //   url: 'https://api.themoviedb.org/3/movie/550/credits?api_key=4a30a8c65888c1fac2a36e456ecba9b6',
+      //   success: (movies) => {
+      //     movies.crew.map((crew) => {
+      //       if (crew.job == 'Director' || crew.job == 'Producer') {
+      //         console.log(crew);
+      //       }
+      //     });
+      //     this.setState({movies})
+      //   }
+      // });
+
+      jQuery.ajax({
+        method: 'GET',
+        url: '/movies',
+        success: function success(movies) {
+          movies.map(function (movie) {
+            _this2.setState({
+              movies: _this2.state.movies.concat([movie])
+            });
+          });
+        }
+      });
+      //  const movies = [
+      //     {id: 1, title: 'Raiders of the Ark', director: 'Whoever'},
+      //     {id: 2, title: 'Return of the Jedi', director: 'George Lucas'},
+      //     {id: 3, title: 'Jaws', director: 'Steven Spielberg'},
+      //     {id: 4, title: 'Interstellar', director: 'Christopher Nolan'}
+      //   ];
+      //   this.setState({
+      //     movies: this.state.movies.concat(movies)
+      //   });
+    }
+
+    // Built-in React functions AFTER render
+
+  }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var _this3 = this;
+
+      this._timer = setInterval(function () {
+        return _this3.state.movies;
+      }, 5000);
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      // clearInterval(this._timer);
     }
   }]);
 

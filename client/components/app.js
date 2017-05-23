@@ -4,27 +4,28 @@ import MovieForm from './movieForm';
 
 export default class App extends React.Component{
 
+  // Initial built-in React functions
   constructor(){
     super();
 
     this.state = {
       showMovies: false,
-      movies: [
-        {id: 1, title: 'Raiders of the Ark', director: 'Whoever'},
-        {id: 2, title: 'Return of the Jedi', director: 'George Lucas'},
-        {id: 3, title: 'Jaws', director: 'Steven Spielberg'},
-        {id: 4, title: 'Interstellar', director: 'Christopher Nolan'}
-      ]
+      // movies: [
+      //   {id: 1, title: 'Raiders of the Ark', director: 'Whoever'},
+      //   {id: 2, title: 'Return of the Jedi', director: 'George Lucas'},
+      //   {id: 3, title: 'Jaws', director: 'Steven Spielberg'},
+      //   {id: 4, title: 'Interstellar', director: 'Christopher Nolan'}
+      // ]
+      movies: []
     };
   }
 
+  // Functions for App Component
   _getMovies() {
-
     return this.state.movies.map((movie) => {
-      console.log(movie);
+      // console.log(movie);
       return (
-        <Movie
-          director={movie.director} title={movie.title} key={movie.id} />
+        <Movie director={movie.director} title={movie.title} key={movie.id} />
       );
     });
 
@@ -92,5 +93,54 @@ export default class App extends React.Component{
         {moviesNodes}
       </div>
     );
+  }
+  componentWillMount(){
+    this._fetchMovies();
+  }
+
+  _fetchMovies() {
+    // jQuery.ajax({
+    //   method: 'GET',
+    //   url: 'https://api.themoviedb.org/3/movie/550/credits?api_key=4a30a8c65888c1fac2a36e456ecba9b6',
+    //   success: (movies) => {
+    //     movies.crew.map((crew) => {
+    //       if (crew.job == 'Director' || crew.job == 'Producer') {
+    //         console.log(crew);
+    //       }
+    //     });
+    //     this.setState({movies})
+    //   }
+    // });
+
+    jQuery.ajax({
+      method: 'GET',
+      url: '/movies',
+      success: (movies) => {
+        movies.map((movie)=>{
+          this.setState({
+            movies: this.state.movies.concat([movie])
+          });
+        })
+      }
+    });
+  //  const movies = [
+  //     {id: 1, title: 'Raiders of the Ark', director: 'Whoever'},
+  //     {id: 2, title: 'Return of the Jedi', director: 'George Lucas'},
+  //     {id: 3, title: 'Jaws', director: 'Steven Spielberg'},
+  //     {id: 4, title: 'Interstellar', director: 'Christopher Nolan'}
+  //   ];
+  //   this.setState({
+  //     movies: this.state.movies.concat(movies)
+  //   });
+  }
+
+
+  // Built-in React functions AFTER render
+  componentDidMount(){
+    this._timer = setInterval(() => this.state.movies, 5000);
+  }
+
+  componentWillUnmount(){
+    // clearInterval(this._timer);
   }
 }
