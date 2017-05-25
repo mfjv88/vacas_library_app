@@ -32,13 +32,37 @@ app.use(express.static(path.join(__dirname, '../client')));
 // ROUTES
 app.get('/', indexRoutes);
 
-mongoose.model('movies', {director: String, title:String});
+mongoose.model('movies', {director: String, title:String, movie_id: Number});
 
 app.get('/movies', function(req, res){
   mongoose.model('movies').find(function(err, movies){
-    console.log(movies);
+    // console.log(movies);
     res.send(movies);
   })
+});
+
+
+app.get('/movies/:movie_id', function(req, res){
+  mongoose.model('movies').find(function(err, movies){
+    res.send(movies);
+  })
+});
+
+app.post('/movies', function(req, res){
+  mongoose.model('movies').create(req.body,function(err){
+    if (err) {
+      res.json({ message: 'Something went wrong'});
+       res.send(err);
+     } else {
+       res.send(req.body)
+     }
+  })
+});
+
+app.delete('/movies/:movie_id', function(req, res){
+  mongoose.model('movies').deleteOne({'movie_id' : req.params.movie_id}, function(err, docs){
+    if (err) console.error(err);
+  });
 });
 
 

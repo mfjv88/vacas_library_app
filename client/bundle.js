@@ -9540,6 +9540,8 @@ var _movieForm2 = _interopRequireDefault(_movieForm);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -9557,12 +9559,6 @@ var App = function (_React$Component) {
 
     _this.state = {
       showMovies: false,
-      // movies: [
-      //   {id: 1, title: 'Raiders of the Ark', director: 'Whoever'},
-      //   {id: 2, title: 'Return of the Jedi', director: 'George Lucas'},
-      //   {id: 3, title: 'Jaws', director: 'Steven Spielberg'},
-      //   {id: 4, title: 'Interstellar', director: 'Christopher Nolan'}
-      // ]
       movies: []
     };
     return _this;
@@ -9574,9 +9570,16 @@ var App = function (_React$Component) {
   _createClass(App, [{
     key: '_getMovies',
     value: function _getMovies() {
+      var _this2 = this;
+
       return this.state.movies.map(function (movie) {
-        // console.log(movie);
-        return _react2.default.createElement(_movies2.default, { director: movie.director, title: movie.title, key: movie.id });
+        return _react2.default.createElement(_movies2.default, {
+          movie: movie,
+          director: movie.director,
+          title: movie.title,
+          movie_id: movie.movie_id,
+          key: movie.movie_id,
+          onDelete: _this2._deleteMovie.bind(_this2) });
       });
     }
   }, {
@@ -9603,15 +9606,38 @@ var App = function (_React$Component) {
   }, {
     key: '_addMovie',
     value: function _addMovie(director, title) {
+      var _this3 = this;
+
       var movie = {
-        id: this.state.movies.length + 1,
         title: title,
-        director: director
+        director: director,
+        movie_id: this.state.movies.length + 1
       };
 
-      this.setState({
-        movies: this.state.movies.concat([movie])
+      jQuery.ajax({
+        url: '/movies',
+        method: 'POST',
+        data: movie,
+        success: function success(newMovie) {
+          _this3.setState({
+            movies: _this3.state.movies.concat([newMovie])
+          });
+        }
       });
+    }
+  }, {
+    key: '_deleteMovie',
+    value: function _deleteMovie(movie) {
+      jQuery.ajax({
+        method: 'DELETE',
+        url: '/movies/' + movie.movie_id
+      });
+
+      var movies = [].concat(_toConsumableArray(this.state.movies));
+      var movieIndex = movies.indexOf(movie);
+      movies.splice(movieIndex, 1);
+
+      this.setState({ movies: movies });
     }
   }, {
     key: 'render',
@@ -9678,7 +9704,7 @@ var App = function (_React$Component) {
   }, {
     key: '_fetchMovies',
     value: function _fetchMovies() {
-      var _this2 = this;
+      var _this4 = this;
 
       // jQuery.ajax({
       //   method: 'GET',
@@ -9698,21 +9724,12 @@ var App = function (_React$Component) {
         url: '/movies',
         success: function success(movies) {
           movies.map(function (movie) {
-            _this2.setState({
-              movies: _this2.state.movies.concat([movie])
+            _this4.setState({
+              movies: _this4.state.movies.concat([movie])
             });
           });
         }
       });
-      //  const movies = [
-      //     {id: 1, title: 'Raiders of the Ark', director: 'Whoever'},
-      //     {id: 2, title: 'Return of the Jedi', director: 'George Lucas'},
-      //     {id: 3, title: 'Jaws', director: 'Steven Spielberg'},
-      //     {id: 4, title: 'Interstellar', director: 'Christopher Nolan'}
-      //   ];
-      //   this.setState({
-      //     movies: this.state.movies.concat(movies)
-      //   });
     }
 
     // Built-in React functions AFTER render
@@ -9720,16 +9737,16 @@ var App = function (_React$Component) {
   }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var _this3 = this;
+      var _this5 = this;
 
       this._timer = setInterval(function () {
-        return _this3.state.movies;
+        return _this5.state.movies;
       }, 5000);
     }
   }, {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
-      // clearInterval(this._timer);
+      clearInterval(this._timer);
     }
   }]);
 
@@ -9882,8 +9899,21 @@ var Movie = function (_React$Component) {
           null,
           'Directed by: ',
           this.props.director
+        ),
+        _react2.default.createElement(
+          'a',
+          { href: '#', onClick: this._handleDelete.bind(this) },
+          'Delete movie'
         )
       );
+    }
+  }, {
+    key: '_handleDelete',
+    value: function _handleDelete(event) {
+      event.preventDefault();
+      if (confirm('Are you sure?')) {
+        this.props.onDelete(this.props.movie);
+      }
     }
   }]);
 

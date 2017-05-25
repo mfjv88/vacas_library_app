@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon bin/www",
-    "webpack": "webpack"
+    "webpack": "webpack --watch"
   },
   "keywords": [],
   "author": "mfjv88",
@@ -16,6 +16,7 @@
     "express": "^4.15.3",
     "js-base64": "^2.1.9",
     "mongoose": "^4.10.2",
+    "mongoose-auto-increment": "^5.0.1",
     "react": "^15.5.4",
     "react-dom": "^15.5.4"
   },

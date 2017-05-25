@@ -8,7 +8,15 @@ export default class Movie extends React.Component{
         <p>
           Directed by: {this.props.director}
         </p>
+        <a href="#" onClick={this._handleDelete.bind(this)}>Delete movie</a>
       </div>
     );
+  }
+
+  _handleDelete(event){
+    event.preventDefault();
+    if(confirm('Are you sure?')){
+      this.props.onDelete(this.props.movie);
+    }
   }
 }

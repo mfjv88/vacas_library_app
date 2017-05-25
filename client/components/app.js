@@ -10,12 +10,6 @@ export default class App extends React.Component{
 
     this.state = {
       showMovies: false,
-      // movies: [
-      //   {id: 1, title: 'Raiders of the Ark', director: 'Whoever'},
-      //   {id: 2, title: 'Return of the Jedi', director: 'George Lucas'},
-      //   {id: 3, title: 'Jaws', director: 'Steven Spielberg'},
-      //   {id: 4, title: 'Interstellar', director: 'Christopher Nolan'}
-      // ]
       movies: []
     };
   }
@@ -23,9 +17,14 @@ export default class App extends React.Component{
   // Functions for App Component
   _getMovies() {
     return this.state.movies.map((movie) => {
-      // console.log(movie);
       return (
-        <Movie director={movie.director} title={movie.title} key={movie.id} />
+        <Movie
+          movie={movie}
+          director={movie.director}
+          title={movie.title}
+          movie_id={movie.movie_id}
+          key={movie.movie_id}
+          onDelete={this._deleteMovie.bind(this)}/>
       );
     });
 
@@ -50,14 +49,34 @@ export default class App extends React.Component{
 
   _addMovie(director, title){
     const movie = {
-      id: this.state.movies.length + 1,
       title,
-      director
+      director,
+      movie_id: this.state.movies.length + 1
     };
 
-    this.setState({
-      movies: this.state.movies.concat([movie])
+    jQuery.ajax({
+      url: '/movies',
+      method: 'POST',
+      data: movie,
+      success: (newMovie) => {
+        this.setState({
+          movies: this.state.movies.concat([newMovie])
+        });
+      }
     });
+  }
+
+  _deleteMovie(movie) {
+    jQuery.ajax({
+      method: 'DELETE',
+      url: `/movies/${movie.movie_id}`
+    });
+
+    const movies = [...this.state.movies];
+    const movieIndex = movies.indexOf(movie);
+    movies.splice(movieIndex, 1);
+
+    this.setState({movies});
   }
 
   render(){
@@ -123,15 +142,6 @@ export default class App extends React.Component{
         })
       }
     });
-  //  const movies = [
-  //     {id: 1, title: 'Raiders of the Ark', director: 'Whoever'},
-  //     {id: 2, title: 'Return of the Jedi', director: 'George Lucas'},
-  //     {id: 3, title: 'Jaws', director: 'Steven Spielberg'},
-  //     {id: 4, title: 'Interstellar', director: 'Christopher Nolan'}
-  //   ];
-  //   this.setState({
-  //     movies: this.state.movies.concat(movies)
-  //   });
   }
 
 
@@ -141,6 +151,6 @@ export default class App extends React.Component{
   }
 
   componentWillUnmount(){
-    // clearInterval(this._timer);
+    clearInterval(this._timer);
   }
 }
