@@ -9579,7 +9579,8 @@ var App = function (_React$Component) {
           title: movie.title,
           movie_id: movie.movie_id,
           key: movie.movie_id,
-          onDelete: _this2._deleteMovie.bind(_this2) });
+          onDelete: _this2._deleteMovie.bind(_this2),
+          onSave: _this2._saveEdit.bind(_this2) });
       });
     }
   }, {
@@ -9610,12 +9611,11 @@ var App = function (_React$Component) {
 
       var movie = {
         title: title,
-        director: director,
-        movie_id: this.state.movies.length + 1
+        director: director
       };
 
       jQuery.ajax({
-        url: '/movies',
+        url: '/movies/add',
         method: 'POST',
         data: movie,
         success: function success(newMovie) {
@@ -9630,7 +9630,7 @@ var App = function (_React$Component) {
     value: function _deleteMovie(movie) {
       jQuery.ajax({
         method: 'DELETE',
-        url: '/movies/' + movie.movie_id
+        url: '/movies/delete/' + movie.movie_id
       });
 
       var movies = [].concat(_toConsumableArray(this.state.movies));
@@ -9638,6 +9638,34 @@ var App = function (_React$Component) {
       movies.splice(movieIndex, 1);
 
       this.setState({ movies: movies });
+    }
+
+    // For editing
+
+  }, {
+    key: '_saveEdit',
+    value: function _saveEdit(director, title, previousData) {
+      var _this4 = this;
+
+      var movie_id = previousData.movie_id;
+      var updatedInput = {
+        title: title,
+        director: director,
+        "movie_id": movie_id
+      };
+
+      jQuery.ajax({
+        url: '/movies/edit/' + movie_id,
+        method: 'POST',
+        data: updatedInput,
+        success: function success(updatedMovie) {
+          var movies = [].concat(_toConsumableArray(_this4.state.movies));
+          var movieIndex = movies.indexOf(previousData);
+          movies[movieIndex] = updatedMovie;
+
+          _this4.setState({ movies: movies });
+        }
+      });
     }
   }, {
     key: 'render',
@@ -9655,9 +9683,6 @@ var App = function (_React$Component) {
       // Conditionals
       if (this.state.showMovies) {
         buttonText = 'Hide movies';
-      }
-
-      if (this.state.showMovies) {
         moviesNodes = _react2.default.createElement(
           'div',
           { className: 'movie-list' },
@@ -9704,7 +9729,7 @@ var App = function (_React$Component) {
   }, {
     key: '_fetchMovies',
     value: function _fetchMovies() {
-      var _this4 = this;
+      var _this5 = this;
 
       // jQuery.ajax({
       //   method: 'GET',
@@ -9724,8 +9749,8 @@ var App = function (_React$Component) {
         url: '/movies',
         success: function success(movies) {
           movies.map(function (movie) {
-            _this4.setState({
-              movies: _this4.state.movies.concat([movie])
+            _this5.setState({
+              movies: _this5.state.movies.concat([movie])
             });
           });
         }
@@ -9737,10 +9762,10 @@ var App = function (_React$Component) {
   }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var _this5 = this;
+      var _this6 = this;
 
       this._timer = setInterval(function () {
-        return _this5.state.movies;
+        return _this6.state.movies;
       }, 5000);
     }
   }, {
@@ -9868,6 +9893,8 @@ var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -9877,43 +9904,130 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Movie = function (_React$Component) {
   _inherits(Movie, _React$Component);
 
-  function Movie() {
+  function Movie(props) {
     _classCallCheck(this, Movie);
 
-    return _possibleConstructorReturn(this, (Movie.__proto__ || Object.getPrototypeOf(Movie)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (Movie.__proto__ || Object.getPrototypeOf(Movie)).call(this, props));
+
+    _this.state = {
+      editMovie: false,
+      titleValue: _this.props.title,
+      directorValue: _this.props.director
+    };
+
+    _this.handleInputChange = _this.handleInputChange.bind(_this);
+
+    return _this;
   }
 
   _createClass(Movie, [{
-    key: 'render',
-    value: function render() {
-      return _react2.default.createElement(
-        'div',
-        null,
-        _react2.default.createElement(
-          'h3',
-          null,
-          this.props.title
-        ),
-        _react2.default.createElement(
-          'p',
-          null,
-          'Directed by: ',
-          this.props.director
-        ),
-        _react2.default.createElement(
-          'a',
-          { href: '#', onClick: this._handleDelete.bind(this) },
-          'Delete movie'
-        )
-      );
+    key: "handleInputChange",
+    value: function handleInputChange(event) {
+      var target = event.target;
+      var value = target.value;
+      var name = target.name;
+      this.setState(_defineProperty({}, name, value));
     }
   }, {
-    key: '_handleDelete',
+    key: "render",
+    value: function render() {
+      var _this2 = this;
+
+      if (this.state.editMovie) {
+        // editMovie = this.props.movie;
+        return _react2.default.createElement(
+          "div",
+          null,
+          _react2.default.createElement("input", { type: "text", placeholder: "Director:", name: "directorValue", value: this.state.directorValue, ref: function ref(input) {
+              return _this2._director = input;
+            }, onChange: this.handleInputChange }),
+          _react2.default.createElement("input", { type: "text", placeholder: "Movie:", name: "titleValue", value: this.state.titleValue, ref: function ref(input) {
+              return _this2._title = input;
+            }, onChange: this.handleInputChange }),
+          _react2.default.createElement(
+            "button",
+            { onClick: this._handleSave.bind(this) },
+            "Save changes"
+          )
+        );
+      } else {
+        return _react2.default.createElement(
+          "div",
+          null,
+          _react2.default.createElement(
+            "h3",
+            null,
+            this.props.title
+          ),
+          _react2.default.createElement(
+            "p",
+            null,
+            "Directed by: ",
+            this.props.director
+          ),
+          _react2.default.createElement(
+            "span",
+            null,
+            _react2.default.createElement(
+              "a",
+              { href: "#", onClick: this._handleDelete.bind(this) },
+              "Delete movie"
+            )
+          ),
+          _react2.default.createElement(
+            "span",
+            null,
+            _react2.default.createElement(
+              "a",
+              { href: "#", onClick: this._handleEdit.bind(this) },
+              "Edit movie"
+            )
+          )
+        );
+      }
+    }
+  }, {
+    key: "_handleDelete",
     value: function _handleDelete(event) {
       event.preventDefault();
       if (confirm('Are you sure?')) {
         this.props.onDelete(this.props.movie);
       }
+    }
+  }, {
+    key: "_handleEdit",
+    value: function _handleEdit(event) {
+      event.preventDefault();
+      this.setState({
+        editMovie: true
+      });
+    }
+  }, {
+    key: "_handleSave",
+    value: function _handleSave(event) {
+      event.preventDefault();
+      this.setState({
+        editMovie: false
+      });
+
+      var director = this._director;
+      var title = this._title;
+
+      this.props.onSave(director.value, title.value, this.props.movie);
+    }
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var _this3 = this;
+
+      this._timer = setInterval(function () {
+        return _this3.state.movies;
+      }, 1000);
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      clearInterval(this._timer);
     }
   }]);
 

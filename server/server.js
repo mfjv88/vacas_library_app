@@ -4,19 +4,18 @@ var path = require('path'),
     express = require('express'),
     bodyParser = require('body-parser'),
     env = require('dotenv').config(),
-    mongoose = require('mongoose');
+    mongoose = require('mongoose'),
+    Schema = mongoose.Schema,
+    autoIncrement = require('mongoose-auto-increment');
 
 // IMPORTS
-var indexRoutes = require('./routes/index');
+var indexRoutes = require('./routes/index'),
+    updateRoutes = require('./routes/update'),
+    resetRoutes = require('./routes/resetid');
 
 // CREATE APP
 var app = express();
 
-// DB
-var user = process.env.DB_USER,
-    pwd = process.env.DB_PASS,
-    host = process.env.DB_HOST;
-mongoose.connect("mongodb://" + user + ":" + pwd + "@" + host);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 
@@ -32,39 +31,17 @@ app.use(express.static(path.join(__dirname, '../client')));
 // ROUTES
 app.get('/', indexRoutes);
 
-mongoose.model('movies', {director: String, title:String, movie_id: Number});
+app.get('/movies', indexRoutes);
 
-app.get('/movies', function(req, res){
-  mongoose.model('movies').find(function(err, movies){
-    // console.log(movies);
-    res.send(movies);
-  })
-});
+app.get('/movies/:movie_id', indexRoutes);
 
+app.post('/movies/add', updateRoutes);
 
-app.get('/movies/:movie_id', function(req, res){
-  mongoose.model('movies').find(function(err, movies){
-    res.send(movies);
-  })
-});
+app.delete('/movies/delete/:movie_id', updateRoutes);
 
-app.post('/movies', function(req, res){
-  mongoose.model('movies').create(req.body,function(err){
-    if (err) {
-      res.json({ message: 'Something went wrong'});
-       res.send(err);
-     } else {
-       res.send(req.body)
-     }
-  })
-});
+app.post('/movies/edit/:movie_id', updateRoutes);
 
-app.delete('/movies/:movie_id', function(req, res){
-  mongoose.model('movies').deleteOne({'movie_id' : req.params.movie_id}, function(err, docs){
-    if (err) console.error(err);
-  });
-});
-
+app.get('/movies/counter/reset', resetRoutes);
 
 // ERROR HANDLER
 app.use(function(err, req, res, next){

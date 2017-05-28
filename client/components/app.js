@@ -24,10 +24,10 @@ export default class App extends React.Component{
           title={movie.title}
           movie_id={movie.movie_id}
           key={movie.movie_id}
-          onDelete={this._deleteMovie.bind(this)}/>
+          onDelete={this._deleteMovie.bind(this)}
+          onSave={this._saveEdit.bind(this)}/>
       );
     });
-
   }
 
   _getMoviesTitle(movieCount) {
@@ -50,12 +50,11 @@ export default class App extends React.Component{
   _addMovie(director, title){
     const movie = {
       title,
-      director,
-      movie_id: this.state.movies.length + 1
+      director
     };
 
     jQuery.ajax({
-      url: '/movies',
+      url: '/movies/add',
       method: 'POST',
       data: movie,
       success: (newMovie) => {
@@ -69,7 +68,7 @@ export default class App extends React.Component{
   _deleteMovie(movie) {
     jQuery.ajax({
       method: 'DELETE',
-      url: `/movies/${movie.movie_id}`
+      url: `/movies/delete/${movie.movie_id}`
     });
 
     const movies = [...this.state.movies];
@@ -78,6 +77,31 @@ export default class App extends React.Component{
 
     this.setState({movies});
   }
+
+
+  // For editing
+  _saveEdit(director, title, previousData) {
+    let movie_id = previousData.movie_id;
+    const updatedInput = {
+      title,
+      director,
+      "movie_id": movie_id
+    };
+
+    jQuery.ajax({
+      url: `/movies/edit/${movie_id}`,
+      method: 'POST',
+      data: updatedInput,
+      success: (updatedMovie) => {
+        const movies = [...this.state.movies];
+        const movieIndex = movies.indexOf(previousData);
+        movies[movieIndex] = updatedMovie;
+
+        this.setState({movies});
+      }
+    });
+  }
+
 
   render(){
 
@@ -93,9 +117,6 @@ export default class App extends React.Component{
     // Conditionals
     if(this.state.showMovies){
       buttonText = 'Hide movies';
-    }
-
-    if(this.state.showMovies){
       moviesNodes = <div className="movie-list">{movies}</div>;
     }
 
