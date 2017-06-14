@@ -24,7 +24,6 @@ export default class Movie extends React.Component{
   }
 
   render(){
-
     if(this.state.editMovie){
       // editMovie = this.props.movie;
       return(

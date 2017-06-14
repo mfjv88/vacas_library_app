@@ -6,11 +6,15 @@ var path = require('path'),
     autoIncrement = require('mongoose-auto-increment');;
 
 // DB
-var user = process.env.DB_USER,
-    pwd = process.env.DB_PASS,
-    host = process.env.DB_HOST;
+if (process.env.NODE_ENV == 'production') {
+  var user = process.env.DB_USER,
+      pwd = process.env.DB_PASS,
+      host = process.env.DB_HOST;
 
-var connection = mongoose.createConnection("mongodb://" + user + ":" + pwd + "@" + host);
+  var connection = mongoose.createConnection("mongodb://" + user + ":" + pwd + "@" + host);
+} else {
+  var connection = mongoose.createConnection("mongodb://localhost:27017/movies");
+}
 
 autoIncrement.initialize(connection);
 
@@ -18,6 +22,8 @@ var movieSchema = new Schema({
   movie_id: {type: Number, ref: 'MovieId'},
   director: String,
   title: String,
+  created_at: Date,
+  updated_at: Date
 });
 
 movieSchema.plugin(autoIncrement.plugin, {

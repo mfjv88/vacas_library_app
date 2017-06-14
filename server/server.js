@@ -2,16 +2,11 @@
 var path = require('path'),
     fs = require('fs'),
     express = require('express'),
-    bodyParser = require('body-parser'),
-    env = require('dotenv').config(),
-    mongoose = require('mongoose'),
-    Schema = mongoose.Schema,
-    autoIncrement = require('mongoose-auto-increment');
+    bodyParser = require('body-parser');
 
 // IMPORTS
-var indexRoutes = require('./routes/index'),
-    updateRoutes = require('./routes/update'),
-    resetRoutes = require('./routes/resetid');
+var indexRoutes = require('./routes/index');
+
 
 // CREATE APP
 var app = express();
@@ -35,13 +30,17 @@ app.get('/movies', indexRoutes);
 
 app.get('/movies/:movie_id', indexRoutes);
 
-app.post('/movies/add', updateRoutes);
+app.get('/search/:query', indexRoutes);
 
-app.delete('/movies/delete/:movie_id', updateRoutes);
+app.post('/movies/add', indexRoutes);
 
-app.post('/movies/edit/:movie_id', updateRoutes);
+app.delete('/movies/delete/:movie_id', indexRoutes);
 
-app.get('/movies/counter/reset', resetRoutes);
+app.post('/movies/edit/:movie_id', indexRoutes);
+
+app.get('/movies/counter/reset', indexRoutes);
+
+app.get('*', indexRoutes);
 
 // ERROR HANDLER
 app.use(function(err, req, res, next){
