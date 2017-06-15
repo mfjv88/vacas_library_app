@@ -22,10 +22,10 @@ export default class MainNav extends React.Component{
           </div>
           <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul className="nav navbar-nav navbar-right">
-              <Link prefetch href="/add_movie" replace>
+              <Link prefetch href="/add" replace>
                 <li><a>Add Movie</a></li>
               </Link>
-              <Link prefetch href="/search_movie" replace>
+              <Link prefetch href="/search" replace>
                 <li><a>Search</a></li>
               </Link>
               <Link prefetch href="/login" replace>

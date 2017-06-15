@@ -102,7 +102,7 @@ var MainNav = function (_React$Component) {
           fileName: _jsxFileName,
           lineNumber: 24
         }
-      }, _react2.default.createElement(_link2.default, { prefetch: true, href: '/add_movie', replace: true, __source: {
+      }, _react2.default.createElement(_link2.default, { prefetch: true, href: '/add', replace: true, __source: {
           fileName: _jsxFileName,
           lineNumber: 25
         }
@@ -116,7 +116,7 @@ var MainNav = function (_React$Component) {
           fileName: _jsxFileName,
           lineNumber: 26
         }
-      }, 'Add Movie'))), _react2.default.createElement(_link2.default, { prefetch: true, href: '/search_movie', replace: true, __source: {
+      }, 'Add Movie'))), _react2.default.createElement(_link2.default, { prefetch: true, href: '/search', replace: true, __source: {
           fileName: _jsxFileName,
           lineNumber: 28
         }
