@@ -6,6 +6,7 @@ var path = require('path'),
 
 // IMPORTS
 var indexRoutes = require('./routes/index');
+    port = process.env.PORT || 3000;
 
 
 // CREATE APP
@@ -47,5 +48,8 @@ app.use(function(err, req, res, next){
   res.status(err.status || 500);
 });
 
-// EXPORT TO SERVER
-module.exports = app;
+// LISTENING TO SERVER
+app.listen(port, function(){
+  console.log('running at localhost:' + port);
+});
+

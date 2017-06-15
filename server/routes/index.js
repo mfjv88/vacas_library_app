@@ -15,8 +15,9 @@ var React = require('react'),
     match = require('react-router').match,
     ReactRouter = require('react-router'),
     RouterContext = ReactRouter.RouterContext,
-    routes = require('../../client/components/routes')
-// console.log(ReactRouter.createRouter(routes));
+    routes = require('../../client/components/routes');
+
+    // console.log(routes);
 
 function renderPage(appHtml) {
   return `

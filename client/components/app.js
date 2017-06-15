@@ -1,6 +1,8 @@
 import React from 'react';
-import {BrowserRouter as Router, Link, Route, browserHistory} from 'react-router-dom';
-import routes from './routes';
+import {BrowserRouter as Router, Link, Route} from 'react-router-dom';
+import MainNav from './partials/navbar';
+import MovieFormBlock from './add/movie_form_block';
+import SearchBarBlock from './search/search_bar_block';
 
 export default class App extends React.Component{
 
@@ -18,7 +20,12 @@ export default class App extends React.Component{
 
     // JSX
     return (
-      <Router routes={routes} history={browserHistory}/>
+        <div>
+          <MainNav/>
+          <div id='body'>
+            {this.props.children}
+          </div>
+        </div>      
     );
   }
 

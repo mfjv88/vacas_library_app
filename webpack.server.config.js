@@ -1,37 +1,32 @@
-var webpack = require('webpack');
-var path = require('path');
-var fs = require('fs');
-
-var nodeModules = {};
-fs.readdirSync('node_modules')
-    .filter(function(x){
-      return ['.bin'].indexOf(x) === -1
-    })
-    .forEach(function(mod){
-      nodeModules[mod] = 'commonjs ' + mod;
-    });
+var fs = require('fs')
+var path = require('path')
 
 module.exports = {
-  name: 'server',
-  target: 'node',
-  entry: {
-    // bundle: './client/index.js',
-    render: './server/routes/jsx/render.jsx'
-  },
+
+  entry: path.resolve(__dirname, 'server/server.js'),
+
   output: {
-    // path: path.join(__dirname, 'client'),
-    path: path.join(__dirname, 'server/routes'),
-    publicPath: 'server/routes',
-    filename: '[name].js'
+    filename: 'server/server.bundle.js'
   },
-  externals: nodeModules,
+
+  target: 'node',
+
+  externals: fs.readdirSync(path.resolve(__dirname, 'node_modules')).concat([
+    'react-dom/server', 'react/addons',
+  ]).reduce(function (ext, mod) {
+    ext[mod] = 'commonjs ' + mod
+    return ext
+  }, {}),
+
+  node: {
+    __filename: true,
+    __dirname: true
+  },
+
   module: {
-    loaders: [{
-      test: /.jsx?$/,
-      loader: 'babel-loader',
-      query: {
-        presets: ['es2015', 'react']
-      }
-    }]
+    loaders: [
+      { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader?presets[]=es2015&presets[]=react' }
+    ]
   }
-};
+
+}
