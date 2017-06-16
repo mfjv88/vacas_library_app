@@ -4,12 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "if-env NODE_ENV=production && npm run start:prod || npm run start:dev",
-    "start:dev": "webpack-dev-server --inline --content-base public/ --history-api-fallback",
+    "start": "node server/",
+    "dev": "next",
     "start:prod": "npm run build && nodemon server/server.js",
-    "build": "webpack --watch",
-    "build:server": "webpack --config webpack.server.config.js",
-    "dev": "next"
+    "build": "react-scripts build",
+    "build:server": "webpack --config webpack.server.config.js"
   },
   "keywords": [],
   "author": "mfjv88",
@@ -23,6 +22,8 @@
     "express": "^4.15.3",
     "express-jwt": "^5.3.0",
     "if-env": "^1.0.0",
+    "import-export": "^1.0.1",
+    "jquery": "^3.2.1",
     "js-base64": "^2.1.9",
     "jsonwebtoken": "^7.4.1",
     "mongoose": "^4.10.2",
@@ -60,6 +61,7 @@
     "gulp-sass": "^3.1.0",
     "gulp-watch": "^4.3.11",
     "gulp-webpack": "^1.5.0",
+    "react-scripts": "^1.0.7",
     "webpack": "^2.5.1",
     "webpack-dev-middleware": "^1.10.2",
     "webpack-dev-server": "^2.4.5",

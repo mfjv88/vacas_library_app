@@ -1,32 +1,36 @@
+require("import-export");
 require("babel-register")({
   presets: ['es2015', 'react']
 });
 
 // PACKAGES
-var path = require('path'),
+var http = require('http'),
+    path = require('path'),
     fs = require('fs'),
     express = require('express'),
     bodyParser = require('body-parser');
 
 // IMPORTS
-var indexRoutes = require('./routes/index');
-    port = process.env.PORT || 3000;
-
-// Webpack Requirements
-import webpack from 'webpack';
-// import config from '../webpack.config.dev';
-import webpackDevMiddleware from 'webpack-dev-middleware';
-import webpackHotMiddleware from 'webpack-hot-middleware';
+  var indexRoutes = require('./routes/index');
+  var  port = process.env.PORT || 3000;
 
 // CREATE APP
 var app = express();
 
-var React = require('react'),
-    ReactDOMServer = require('react-dom/server'),
-    ReactRouter = require('react-router'),
-    RouterContext = ReactRouter.RouterContext;
-    routes = require('../client/components/app');
+var react = require('react'),
+    reactDomServer = require('react-dom/server'),
+    reactRouter = require('react-router'),
+    routerContext = reactRouter.RouterContext;
 
+var renderToString = reactDomServer.renderToString,
+    match = reactRouter.match,
+    routes = require('../src/components/routes').default();
+
+// var staticFiles = [
+//   '/static/*'
+// ]
+
+app.server = http.createServer(app);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 
@@ -37,53 +41,50 @@ app.engine('html', function(path, options, callbacks){
 });
 
 // MIDDLEWARE
-app.use(express.static(path.join(__dirname, '../client')));
+app.use(express.static(path.join(__dirname, '../build')));
 
-// console.log();
+app.get('*', function(req, res){
 
-console.log(ReactRouter.match({routes: ReactRouter.createRoutes(routes), location: "/search_movie"}, function(error, redirectLocation, renderProps){
-	console.log(error, redirectLocation, renderProps);
-}));
-
-app.use(function(req, res){
-  // Note that req.url here should be the full URL path from
-  // the original request, including the query string.
-  console.log(routes[0].props.path);
-  ReactRouter.match({ routes: routes, location: req.url }, function(error, redirectLocation, renderProps) {
-    console.log(error, redirectLocation, renderProps)
-    if (error) {
-      res.status(500).send(error.message)
-    } else if (redirectLocation) {
-      res.redirect(302, redirectLocation.pathname + redirectLocation.search)
-    } else if (renderProps) {
-      // You can also check renderProps.components or renderProps.routes for
-      // your "not found" component or route respectively, and send a 404 as
-      // below, if you're using a catch-all route.
-      res.status(200).send(ReactDOMServer.renderToString(React.createElement(RouterContext,renderProps)))
+  var htmlFilePath = path.join( __dirname, '../build', 'index.html');
+  fs.readFile( htmlFilePath, 'utf8', function(err, htmlData){
+    if (err){
+      error();
     } else {
-      res.status(404).send('Not found')
+      match({routes: routes, location: req.url}, function(error, redirectLocation, renderProps) {
+        if (error) {
+          res.status(500).send(error.message)
+        } else if (redirectLocation) {
+          res.redirect(302, redirectLocation.pathname + redirectLocation.search)
+        } else if (renderProps) {
+          var ReactApp = renderToString(react.createElement(routerContext,renderProps));
+          var Rendered = htmlData.replace('{{SSR}}', ReactApp);
+          res.status(200).send(Rendered);
+        } else {
+          res.status(404).send('Not found')
+        }
+      })
     }
   })
 });
 
 // ROUTES
-app.get('/', indexRoutes);
+// app.get('/', indexRoutes);
 
-app.get('/movies', indexRoutes);
+// app.get('/movies', indexRoutes);
 
-app.get('/movies/:movie_id', indexRoutes);
+// app.get('/movies/:movie_id', indexRoutes);
 
-app.get('/search/:query', indexRoutes);
+// app.get('/search/:query', indexRoutes);
 
-app.post('/movies/add', indexRoutes);
+// app.post('/movies/add', indexRoutes);
 
-app.delete('/movies/delete/:movie_id', indexRoutes);
+// app.delete('/movies/delete/:movie_id', indexRoutes);
 
-app.post('/movies/edit/:movie_id', indexRoutes);
+// app.post('/movies/edit/:movie_id', indexRoutes);
 
-app.get('/movies/counter/reset', indexRoutes);
+// app.get('/movies/counter/reset', indexRoutes);
 
-app.get('*', indexRoutes);
+// app.get('*', indexRoutes);
 
 // ERROR HANDLER
 app.use(function(err, req, res, next){
