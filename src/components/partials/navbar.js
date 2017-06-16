@@ -15,27 +15,27 @@ export default class MainNav extends React.Component{
               <span className="icon-bar"></span>
               <span className="icon-bar"></span>
             </button>
-            <Link to="/">
-              <a className="navbar-brand">
+            <Link className="navbar-brand" to="/">
+              
               Master Seeker
-              </a>
+              
             </Link>
           </div>
           <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul className="nav navbar-nav navbar-right">
                 <li>
                   <Link to="/add_movie">
-                    <a>Add Movie</a>
+                    Add Movie
                   </Link>
                 </li>
                 <li>
                   <Link to="/search_movie">
-                    <a>Search</a>
+                    Search
                   </Link>
                 </li>
                 <li>
                   <Link to="/login">
-                    <a>Log In</a>
+                    Log In
                   </Link>
                 </li>
             </ul>

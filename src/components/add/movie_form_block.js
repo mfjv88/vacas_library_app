@@ -139,18 +139,18 @@ export default class MovieFormBlock extends React.Component{
   }
 
   _fetchMovies() {
-    // jQuery.ajax({
-    //   method: 'GET',
-    //   url: 'https://api.themoviedb.org/3/movie/550/credits?api_key=4a30a8c65888c1fac2a36e456ecba9b6',
-    //   success: (movies) => {
-    //     movies.crew.map((crew) => {
-    //       if (crew.job == 'Director' || crew.job == 'Producer') {
-    //         console.log(crew);
-    //       }
-    //     });
-    //     this.setState({movies})
-    //   }
-    // });
+    /*jQuery.ajax({
+      method: 'GET',
+      url: 'https://api.themoviedb.org/3/movie/550/credits?api_key=4a30a8c65888c1fac2a36e456ecba9b6',
+      success: (movies) => {
+        movies.crew.map((crew) => {
+          if (crew.job == 'Director' || crew.job == 'Producer') {
+            console.log(crew);
+          }
+        });
+        this.setState({movies})
+      }
+    });*/
 
     jQuery.ajax({
       method: 'GET',
