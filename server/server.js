@@ -1,3 +1,7 @@
+require("babel-register")({
+  presets: ['es2015', 'react']
+});
+
 // PACKAGES
 var path = require('path'),
     fs = require('fs'),
@@ -8,9 +12,20 @@ var path = require('path'),
 var indexRoutes = require('./routes/index');
     port = process.env.PORT || 3000;
 
+// Webpack Requirements
+import webpack from 'webpack';
+// import config from '../webpack.config.dev';
+import webpackDevMiddleware from 'webpack-dev-middleware';
+import webpackHotMiddleware from 'webpack-hot-middleware';
 
 // CREATE APP
 var app = express();
+
+var React = require('react'),
+    ReactDOMServer = require('react-dom/server'),
+    ReactRouter = require('react-router'),
+    RouterContext = ReactRouter.RouterContext;
+    routes = require('../client/components/app');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
@@ -23,6 +38,33 @@ app.engine('html', function(path, options, callbacks){
 
 // MIDDLEWARE
 app.use(express.static(path.join(__dirname, '../client')));
+
+// console.log();
+
+console.log(ReactRouter.match({routes: ReactRouter.createRoutes(routes), location: "/search_movie"}, function(error, redirectLocation, renderProps){
+	console.log(error, redirectLocation, renderProps);
+}));
+
+app.use(function(req, res){
+  // Note that req.url here should be the full URL path from
+  // the original request, including the query string.
+  console.log(routes[0].props.path);
+  ReactRouter.match({ routes: routes, location: req.url }, function(error, redirectLocation, renderProps) {
+    console.log(error, redirectLocation, renderProps)
+    if (error) {
+      res.status(500).send(error.message)
+    } else if (redirectLocation) {
+      res.redirect(302, redirectLocation.pathname + redirectLocation.search)
+    } else if (renderProps) {
+      // You can also check renderProps.components or renderProps.routes for
+      // your "not found" component or route respectively, and send a 404 as
+      // below, if you're using a catch-all route.
+      res.status(200).send(ReactDOMServer.renderToString(React.createElement(RouterContext,renderProps)))
+    } else {
+      res.status(404).send('Not found')
+    }
+  })
+});
 
 // ROUTES
 app.get('/', indexRoutes);

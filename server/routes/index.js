@@ -14,7 +14,7 @@ var React = require('react'),
     app_routesToString = require('react-dom/server'),
     match = require('react-router').match,
     ReactRouter = require('react-router'),
-    RouterContext = ReactRouter.RouterContext,
+    RouterContext = ReactRouter.RouterContext;
     routes = require('../../client/components/routes');
 
     // console.log(routes);
@@ -76,22 +76,22 @@ router.get('/search/:query', function(req, res){
   });
 });
 
-router.get('*', (req, res) => {
-  console.log(routes, req.url);
-  match({routes: routes, location: req.url}, function(err, redirect, props){
-    console.log(err, redirect, props);
-    if (err) {
-      res.status(500).send(err.message);
-    } else if (redirect) {
-      res.redirect(redirect.pathname + redirect.search);
-    } else if (props) {
-      var appHtml = renderToString(`<RouterContext {...props}/>`);
-      res.status(200).send(renderPage(appHtml));
-    } else {
-      res.status(404).send('Not Fund')
-    }
-  });
-});
+// router.get('*', (req, res) => {
+//   // console.log(routes, req.url);
+//   match({routes: routes, location: req.url}, function(err, redirect, props){
+//     console.log(err, redirect, props);
+//     if (err) {
+//       res.status(500).send(err.message);
+//     } else if (redirect) {
+//       res.redirect(redirect.pathname + redirect.search);
+//     } else if (props) {
+//       var appHtml = renderToString(`<RouterContext {...props}/>`);
+//       res.status(200).send(renderPage(appHtml));
+//     } else {
+//       res.status(404).send('Not Fund')
+//     }
+//   });
+// });
 
 
 module.exports = router;
