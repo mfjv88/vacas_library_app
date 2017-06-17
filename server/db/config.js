@@ -11,11 +11,12 @@ if (process.env.NODE_ENV == 'production') {
       pwd = process.env.DB_PASS,
       host = process.env.DB_HOST;
 
+  
   var connection = mongoose.createConnection("mongodb://" + user + ":" + pwd + "@" + host);
 } else {
+
   var connection = mongoose.createConnection("mongodb://localhost:27017/movies");
 }
-
 autoIncrement.initialize(connection);
 
 var movieSchema = new Schema({

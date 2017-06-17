@@ -10,12 +10,10 @@ var http = require('http'),
     express = require('express'),
     bodyParser = require('body-parser');
 
-// IMPORTS
-  var indexRoutes = require('./routes/index');
-  var  port = process.env.PORT || 3000;
-
 // CREATE APP
 var app = express();
+
+var Movie = require('./db/config');
 
 var react = require('react'),
     reactDomServer = require('react-dom/server'),
@@ -26,25 +24,61 @@ var renderToString = reactDomServer.renderToString,
     match = reactRouter.match,
     routes = require('../src/components/routes').default();
 
+// IMPORTS
+  var indexRoutes = require('./routes/index'),
+      port = process.env.PORT || 3000;
+
 // var staticFiles = [
 //   '/static/*'
 // ]
 
-app.server = http.createServer(app);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 
 // VIEW ENGINES
 app.set('view engine', 'html');
-app.engine('html', function(path, options, callbacks){
-  fs.readFile(path, 'utf-8', callback);
-});
 
 // MIDDLEWARE
 app.use(express.static(path.join(__dirname, '../build')));
 
-app.get('*', function(req, res){
+// console.log(indexRoutes.stack[1].route);
 
+// Movie.find(function(err, movies){
+//     console.log(movies);
+// });
+
+// ROUTES
+// app.get('api/movies/:movie_id', indexRoutes);
+app.get('/api/movies/:movie_id', function(req, res){
+  console.log('7');
+});
+// app.get('/search/:query', indexRoutes);
+
+app.post('/api/movies/add', function(req, res){
+  console.log('8');
+});
+
+app.delete('/api/movies/delete/:movie_id', function(req, res){
+  console.log('9');
+});
+
+app.post('/api/movies/edit/:movie_id', function(req, res){
+  console.log('10');
+});
+
+app.get('/movies', function(req, res){
+  console.log('6');
+});
+
+// app.get('/search_movie', indexRoutes);
+
+// app.get('/add_movie', indexRoutes);
+
+app.get('/', indexRoutes);
+
+// app.get('/movies/counter/reset', indexRoutes);
+app.get('*', function(req, res){
+  console.log(req.body);
   var htmlFilePath = path.join( __dirname, '../build', 'index.html');
   fs.readFile( htmlFilePath, 'utf8', function(err, htmlData){
     if (err){
@@ -67,24 +101,6 @@ app.get('*', function(req, res){
   })
 });
 
-// ROUTES
-// app.get('/', indexRoutes);
-
-// app.get('/movies', indexRoutes);
-
-// app.get('/movies/:movie_id', indexRoutes);
-
-// app.get('/search/:query', indexRoutes);
-
-// app.post('/movies/add', indexRoutes);
-
-// app.delete('/movies/delete/:movie_id', indexRoutes);
-
-// app.post('/movies/edit/:movie_id', indexRoutes);
-
-// app.get('/movies/counter/reset', indexRoutes);
-
-// app.get('*', indexRoutes);
 
 // ERROR HANDLER
 app.use(function(err, req, res, next){

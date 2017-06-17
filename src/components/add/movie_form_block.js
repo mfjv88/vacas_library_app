@@ -17,7 +17,9 @@ export default class MovieFormBlock extends React.Component{
 
   // Functions for App Component
   _getMovies() {
+    console.log(this.state.movies);
     return this.state.movies.map((movie) => {
+      console.log(movie);
       return(
         <Movie
           movie={movie}
@@ -55,7 +57,7 @@ export default class MovieFormBlock extends React.Component{
     };
 
     jQuery.ajax({
-      url: '/movies/add',
+      url: '/api/movies/add',
       method: 'POST',
       data: movie,
       success: (newMovie) => {
@@ -69,7 +71,7 @@ export default class MovieFormBlock extends React.Component{
   _deleteMovie(movie) {
     jQuery.ajax({
       method: 'DELETE',
-      url: `/movies/delete/${movie.movie_id}`
+      url: `/api/movies/delete/${movie.movie_id}`
     });
 
     const movies = [...this.state.movies];
@@ -90,7 +92,7 @@ export default class MovieFormBlock extends React.Component{
     };
 
     jQuery.ajax({
-      url: `/movies/edit/${movie_id}`,
+      url: `/api/movies/edit/${movie_id}`,
       method: 'POST',
       data: updatedInput,
       success: (updatedMovie) => {
@@ -135,27 +137,30 @@ export default class MovieFormBlock extends React.Component{
     );
   }
   componentWillMount(){
-    this._fetchMovies();
+    // this._fetchMovies();
   }
 
   _fetchMovies() {
-    /*jQuery.ajax({
-      method: 'GET',
-      url: 'https://api.themoviedb.org/3/movie/550/credits?api_key=4a30a8c65888c1fac2a36e456ecba9b6',
-      success: (movies) => {
-        movies.crew.map((crew) => {
-          if (crew.job == 'Director' || crew.job == 'Producer') {
-            console.log(crew);
-          }
-        });
-        this.setState({movies})
-      }
-    });*/
+    console.log('in _fetchMovies, before commented jQuery');
+    // jQuery.ajax({
+    //   method: 'GET',
+    //   url: 'https://api.themoviedb.org/3/movie/550/credits?api_key=4a30a8c65888c1fac2a36e456ecba9b6',
+    //   success: (movies) => {
+    //     movies.crew.map((crew) => {
+    //       if (crew.job == 'Director' || crew.job == 'Producer') {
+    //         console.log(crew);
+    //       }
+    //     });
+    //     this.setState({movies})
+    //   }
+    // });
 
+    console.log('in _fetchMovies, before uncommented jQuery');
     jQuery.ajax({
       method: 'GET',
-      url: '/movies',
+      url: '/api/movies',
       success: (movies) => {
+        console.log('in _fetchMovies, before map');
         movies.map((movie)=>{
           return this.setState({
             movies: this.state.movies.concat([movie])

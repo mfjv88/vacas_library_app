@@ -11,9 +11,6 @@ const Routes = props => {
 				<Route path="/add_movie" component={MovieFormBlock}/>
 				<Route path="/search_movie" component={SearchBarBlock}/>
 			</Route>
-			<Route path="*">
-				<IndexRedirect to="/" />
-			</Route>
 		</Router>
 	)
 }

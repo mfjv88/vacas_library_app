@@ -5,7 +5,7 @@ var path = require('path'),
 var Movie = require('../db/config');
 
 // Routes
-router.post('/movies/add', function(req, res){
+router.post('/api/movies/add', function(req, res){
   var result = {
     'director': req.body.director,
     'title': req.body.title,
@@ -24,13 +24,13 @@ router.post('/movies/add', function(req, res){
   })
 });
 
-router.delete('/movies/delete/:movie_id', function(req, res){
+router.delete('/api/movies/delete/:movie_id', function(req, res){
   Movie.deleteOne({'movie_id' : req.params.movie_id}, function(err){
     if (err) console.error(err);
   });
 });
 
-router.post('/movies/edit/:movie_id', function(req, res){
+router.post('/api/movies/edit/:movie_id', function(req, res){
   var result = {
     'director': req.body.director,
     'title': req.body.title,

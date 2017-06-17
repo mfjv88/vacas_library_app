@@ -13,6 +13,7 @@ export default class SearchBarBlock extends React.Component{
   }
 
  _getMovies() {
+  console.log('in _getMovies, before map');
     return this.state.movies.map((movie) => {
       return(
         <Movie
@@ -30,7 +31,7 @@ export default class SearchBarBlock extends React.Component{
     _deleteMovie(movie) {
     jQuery.ajax({
       method: 'DELETE',
-      url: `/movies/delete/${movie.movie_id}`
+      url: `/api/movies/delete/${movie.movie_id}`
     });
 
     const movies = [...this.state.movies];
@@ -51,7 +52,7 @@ export default class SearchBarBlock extends React.Component{
     };
 
     jQuery.ajax({
-      url: `/movies/edit/${movie_id}`,
+      url: `/api/movies/edit/${movie_id}`,
       method: 'POST',
       data: updatedInput,
       success: (updatedMovie) => {
@@ -68,6 +69,7 @@ export default class SearchBarBlock extends React.Component{
     this.setState({
       movies: []
     });
+    console.log('in _search, before jQuery');
     jQuery.ajax({
       method: 'GET',
       url: `/search/${query}`,
