@@ -1,5 +1,5 @@
 import React from 'react';
-import {Route, Router, browserHistory, IndexRedirect} from 'react-router';
+import {Route, Router, browserHistory} from 'react-router';
 import App from './app';
 import MovieFormBlock from './add/movie_form_block';
 import SearchBarBlock from './search/search_bar_block';

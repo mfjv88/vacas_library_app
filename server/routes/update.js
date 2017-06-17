@@ -1,5 +1,4 @@
-var path = require('path'),
-    router = require('express').Router();
+var router = require('express').Router();
 
 // DB
 var Movie = require('../db/config');
@@ -13,7 +12,6 @@ router.post('/api/movies/add', function(req, res){
     'created_at': new Date(),
     'updated_at': new Date()
   };
-  console.log(result);
   Movie.create(result,function(err, movie){
     if (err) {
       res.json({ message: 'Something went wrong'});
