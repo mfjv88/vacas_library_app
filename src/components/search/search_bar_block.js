@@ -1,6 +1,6 @@
 import React from 'react';
 import SearchBar from './search_bar';
-import jQuery from 'jquery';
+import axios from 'axios';
 import Movie from '../partials/movies';
 
 export default class SearchBarBlock extends React.Component{
@@ -13,7 +13,6 @@ export default class SearchBarBlock extends React.Component{
   }
 
  _getMovies() {
-  console.log('in _getMovies, before map');
     return this.state.movies.map((movie) => {
       return(
         <Movie
@@ -28,11 +27,8 @@ export default class SearchBarBlock extends React.Component{
     });
   }
 
-    _deleteMovie(movie) {
-    jQuery.ajax({
-      method: 'DELETE',
-      url: `/api/movies/delete/${movie.movie_id}`
-    });
+  _deleteMovie(movie) {
+    axios.delete(`/api/movies/delete/${movie.movie_id}`);
 
     const movies = [...this.state.movies];
     const movieIndex = movies.indexOf(movie);
@@ -51,17 +47,16 @@ export default class SearchBarBlock extends React.Component{
       "movie_id": movie_id
     };
 
-    jQuery.ajax({
+    axios({
+      method: 'post',
       url: `/api/movies/edit/${movie_id}`,
-      method: 'POST',
-      data: updatedInput,
-      success: (updatedMovie) => {
+      data: updatedInput
+    }).then((updatedMovie) => {
         const movies = [...this.state.movies];
         const movieIndex = movies.indexOf(previousData);
-        movies[movieIndex] = updatedMovie;
+        movies[movieIndex] = updatedMovie.data;
 
         this.setState({movies});
-      }
     });
   }
 
@@ -69,18 +64,14 @@ export default class SearchBarBlock extends React.Component{
     this.setState({
       movies: []
     });
-    console.log('in _search, before jQuery');
-    jQuery.ajax({
-      method: 'GET',
-      url: `/search/${query}`,
-      success: (movies) => {
-        movies.map((movie)=>{
-          return this.setState({
-          	movies: this.state.movies.concat([movie])
-          });
-        })
-      }
+    axios(`/api/search/${query}`).then((movies)=>{
+      movies.data.map((movie)=>{
+        return this.setState({
+          movies: this.state.movies.concat([movie])
+        });
+      });
     });
+
   }
 
   render(){

@@ -1,32 +1,24 @@
 require("import-export");
 require("babel-register")({
-  presets: ['es2015', 'react']
+  presets: ["es2015", "react-app"]
 });
 
 // PACKAGES
-var http = require('http'),
-    path = require('path'),
-    fs = require('fs'),
+var path = require('path'),
     express = require('express'),
-    bodyParser = require('body-parser');
+    bodyParser = require('body-parser'),
+    env = require('dotenv').config();
 
 // CREATE APP
 var app = express();
 
-var Movie = require('./db/config');
-
-var react = require('react'),
-    reactDomServer = require('react-dom/server'),
-    reactRouter = require('react-router'),
-    routerContext = reactRouter.RouterContext;
-
-var renderToString = reactDomServer.renderToString,
-    match = reactRouter.match,
-    routes = require('../src/components/routes').default();
-
 // IMPORTS
-  var indexRoutes = require('./routes/index'),
-      port = process.env.PORT || 3000;
+var indexRoutes = require('./routes/index');
+
+var updateRoutes = require('./routes/update');
+
+var resetRoutes = require('./routes/resetid');
+
 
 // var staticFiles = [
 //   '/static/*'
@@ -41,71 +33,29 @@ app.set('view engine', 'html');
 // MIDDLEWARE
 app.use(express.static(path.join(__dirname, '../build')));
 
-// console.log(indexRoutes.stack[1].route);
-
-// Movie.find(function(err, movies){
-//     console.log(movies);
-// });
-
 // ROUTES
-// app.get('api/movies/:movie_id', indexRoutes);
-app.get('/api/movies/:movie_id', function(req, res){
-  console.log('7');
-});
-// app.get('/search/:query', indexRoutes);
+app.post('/api/movies/add', updateRoutes);
 
-app.post('/api/movies/add', function(req, res){
-  console.log('8');
-});
+app.post('/api/movies/edit/:movie_id', updateRoutes);
 
-app.delete('/api/movies/delete/:movie_id', function(req, res){
-  console.log('9');
-});
+app.delete('/api/movies/delete/:movie_id', updateRoutes);
 
-app.post('/api/movies/edit/:movie_id', function(req, res){
-  console.log('10');
-});
+app.get('/api/movies', indexRoutes);
 
-app.get('/movies', function(req, res){
-  console.log('6');
-});
+app.get('/api/movies/:movie_id', indexRoutes);
 
-// app.get('/search_movie', indexRoutes);
+app.get('/api/search/:query', indexRoutes);
 
-// app.get('/add_movie', indexRoutes);
+app.get('*', indexRoutes);
 
-app.get('/', indexRoutes);
-
-// app.get('/movies/counter/reset', indexRoutes);
-app.get('*', function(req, res){
-  console.log(req.body);
-  var htmlFilePath = path.join( __dirname, '../build', 'index.html');
-  fs.readFile( htmlFilePath, 'utf8', function(err, htmlData){
-    if (err){
-      error();
-    } else {
-      match({routes: routes, location: req.url}, function(error, redirectLocation, renderProps) {
-        if (error) {
-          res.status(500).send(error.message)
-        } else if (redirectLocation) {
-          res.redirect(302, redirectLocation.pathname + redirectLocation.search)
-        } else if (renderProps) {
-          var ReactApp = renderToString(react.createElement(routerContext,renderProps));
-          var Rendered = htmlData.replace('{{SSR}}', ReactApp);
-          res.status(200).send(Rendered);
-        } else {
-          res.status(404).send('Not found')
-        }
-      })
-    }
-  })
-});
-
+app.get('/api/movies/counter/reset', resetRoutes);
 
 // ERROR HANDLER
 app.use(function(err, req, res, next){
   res.status(err.status || 500);
 });
+
+var port = process.env.PORT || 3000;
 
 // LISTENING TO SERVER
 app.listen(port, function(){

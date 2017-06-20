@@ -1,6 +1,6 @@
 import React from 'react';
 import Movie from '../partials/movies';
-import jQuery from 'jquery';
+import axios from 'axios';
 import MovieForm from './movie_form';
 
 export default class MovieFormBlock extends React.Component{
@@ -17,9 +17,7 @@ export default class MovieFormBlock extends React.Component{
 
   // Functions for App Component
   _getMovies() {
-    console.log(this.state.movies);
     return this.state.movies.map((movie) => {
-      console.log(movie);
       return(
         <Movie
           movie={movie}
@@ -56,23 +54,20 @@ export default class MovieFormBlock extends React.Component{
       director
     };
 
-    jQuery.ajax({
+    axios({
+      method: 'post',
       url: '/api/movies/add',
-      method: 'POST',
-      data: movie,
-      success: (newMovie) => {
-        this.setState({
-          movies: this.state.movies.concat([newMovie])
-        });
-      }
+      data: movie
+    }).then((newMovie) => {
+      this.setState({
+        movies: this.state.movies.concat([newMovie.data])
+      });
     });
+
   }
 
   _deleteMovie(movie) {
-    jQuery.ajax({
-      method: 'DELETE',
-      url: `/api/movies/delete/${movie.movie_id}`
-    });
+    axios.delete(`/api/movies/delete/${movie.movie_id}`);
 
     const movies = [...this.state.movies];
     const movieIndex = movies.indexOf(movie);
@@ -91,17 +86,16 @@ export default class MovieFormBlock extends React.Component{
       "movie_id": movie_id
     };
 
-    jQuery.ajax({
+    axios({
+      method: 'post',
       url: `/api/movies/edit/${movie_id}`,
-      method: 'POST',
-      data: updatedInput,
-      success: (updatedMovie) => {
+      data: updatedInput
+    }).then((updatedMovie) => {
         const movies = [...this.state.movies];
         const movieIndex = movies.indexOf(previousData);
-        movies[movieIndex] = updatedMovie;
+        movies[movieIndex] = updatedMovie.data;
 
         this.setState({movies});
-      }
     });
   }
 
@@ -137,12 +131,11 @@ export default class MovieFormBlock extends React.Component{
     );
   }
   componentWillMount(){
-    // this._fetchMovies();
+    this._fetchMovies();
   }
 
   _fetchMovies() {
-    console.log('in _fetchMovies, before commented jQuery');
-    // jQuery.ajax({
+    // axios({
     //   method: 'GET',
     //   url: 'https://api.themoviedb.org/3/movie/550/credits?api_key=4a30a8c65888c1fac2a36e456ecba9b6',
     //   success: (movies) => {
@@ -155,18 +148,12 @@ export default class MovieFormBlock extends React.Component{
     //   }
     // });
 
-    console.log('in _fetchMovies, before uncommented jQuery');
-    jQuery.ajax({
-      method: 'GET',
-      url: '/api/movies',
-      success: (movies) => {
-        console.log('in _fetchMovies, before map');
-        movies.map((movie)=>{
+    axios('/api/movies').then((movies) => {
+        movies.data.map((movie)=>{
           return this.setState({
             movies: this.state.movies.concat([movie])
           });
         })
-      }
     });
   }
 
