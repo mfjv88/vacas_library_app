@@ -1,7 +1,0 @@
-var app = require('../server.bundle');
-
-var port = process.env.PORT || 3000;
-
-app.listen(port, function(){
-  console.log('running at localhost:' + port);
-});

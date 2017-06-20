@@ -19,8 +19,8 @@ var updateRoutes = require('./routes/update');
 
 var resetRoutes = require('./routes/resetid');
 
-
 var port = process.env.PORT || 3000;
+
 
 // var staticFiles = [
 //   '/static/*'
