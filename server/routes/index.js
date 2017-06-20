@@ -1,6 +1,6 @@
 require("import-export");
 require("babel-register")({
-  presets: ['es2015', 'react']
+  presets: ["es2015", "react-app"]
 });
 
 var http = require('http'),
@@ -19,7 +19,6 @@ var renderToString = reactDomServer.renderToString,
     routerContext = reactRouter.RouterContext,
     match = reactRouter.match,
     routes = require('../../src/components/routes').default();
-
 
 // Routes
 router.get('/api/movies/:movie_id', function(req, res){

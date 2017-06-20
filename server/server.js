@@ -1,20 +1,24 @@
 require("import-export");
 require("babel-register")({
-  presets: ['es2015', 'react']
+  presets: ["es2015", "react-app"]
 });
 
 // PACKAGES
 var path = require('path'),
     express = require('express'),
-    bodyParser = require('body-parser');
+    bodyParser = require('body-parser'),
+    env = require('dotenv').config();
 
 // CREATE APP
 var app = express();
 
 // IMPORTS
-var indexRoutes = require('./routes/index'),
-    updateRoutes = require('./routes/update'),
-    resetRoutes = require('./routes/resetid');
+var indexRoutes = require('./routes/index');
+
+var updateRoutes = require('./routes/update');
+
+var resetRoutes = require('./routes/resetid');
+
 
 var port = process.env.PORT || 3000;
 
