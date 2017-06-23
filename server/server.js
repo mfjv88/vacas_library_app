@@ -12,6 +12,17 @@ var path = require('path'),
 // CREATE APP
 var app = express();
 
+// ADMIN CREDENTIALS
+var admin = require("firebase-admin");
+
+var serviceAccount = require("../masterseeker-firebase-sdk.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: process.env.FIREBASE_DB
+});
+
+
 // IMPORTS
 var indexRoutes = require('./routes/index');
 
