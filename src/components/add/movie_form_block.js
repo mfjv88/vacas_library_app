@@ -18,16 +18,64 @@ export default class MovieFormBlock extends React.Component{
   // Functions for App Component
   _getMovies() {
     return this.state.movies.map((movie) => {
-      return(
-        <Movie
-          movie={movie}
-          director={movie.director}
-          title={movie.title}
-          movie_id={movie.movie_id}
-          key={movie.movie_id}
-          onDelete={this._deleteMovie.bind(this)}
-          onSave={this._saveEdit.bind(this)}/>
-        )
+        axios('https://api.themoviedb.org/3/search/movie?api_key=4a30a8c65888c1fac2a36e456ecba9b6&language=en-US&query=' + movie.title + '&page=1').then((movie_details) => {
+            const first_movie = movie_details.data.results[0];
+            const movie_id = first_movie.id;
+            const movie_title = first_movie.original_title;
+            const movie_overview = first_movie.overview;
+            const movie_poster_path =  first_movie.poster_path;
+            const movie_poster_link = 'http://image.tmdb.org/t/p/original/' + movie_poster_path;
+            const movie_genre_ids =  first_movie.genre_ids;
+            const movie_release_date =  first_movie.release_date;
+            axios('https://api.themoviedb.org/3/movie/' + movie_id + '/credits?api_key=4a30a8c65888c1fac2a36e456ecba9b6').then((movie_crew) => {
+              let movie_cast = [];
+              let movie_production = [];
+              for (let i = 0; i < 5; i++) {
+                movie_cast.push(movie_crew.data.cast[i]);
+              }
+              for (let j = 0; j < movie_crew.data.length; j++){
+                if(movie_crew.data.crew[j].job == 'Director' || movie_crew.data.crew[j].job == 'Producer'){
+                  movie_production.push(movie_crew.data.crew[j]);
+                }
+              }
+              axios('http://www.omdbapi.com/?t=' + movie_title + '&apikey=7535f348').then((movie_omdb) => {
+                const movie_imdb = movie_omdb.data.imdbID;
+                const return_movie = {
+                  cast: movie_cast,
+                  genre_ids: movie_genre_ids,
+                  imdb: movie_imdb,
+                  overview: movie_overview,
+                  poster_link: movie_poster_link,
+                  poster_path: movie_poster_path,
+                  production: movie_production,
+                  release_date: movie_release_date,
+                  title: movie_title
+                };
+                return(
+                  <Movie
+                    movie={movie}
+                    cast={return_movie.cast}
+                    director={movie.director}
+                    imdb={return_movie.imdb}
+                    overview={return_movie.overview}
+                    poster_link={return_movie.poster_link}
+                    production={return_movie.production}
+                    release_date={return_movie.release_date}
+                    title={movie.title}
+                    movie_id={movie.movie_id}
+                    key={movie.movie_id}
+                    onDelete={this._deleteMovie.bind(this)}
+                    onSave={this._saveEdit.bind(this)}/>
+                )
+              });
+            });
+            // http://image.tmdb.org/t/p/original//fMC8JBWx2VjsJ53JopAcFjqmlYv.jpg
+            // movies.crew.map((crew) => {
+            //   if (crew.job == 'Director' || crew.job == 'Producer') {
+            //     console.log(crew);
+            //   }
+            // });
+        });
     });
   }
 
@@ -135,19 +183,6 @@ export default class MovieFormBlock extends React.Component{
   }
 
   _fetchMovies() {
-    // axios({
-    //   method: 'GET',
-    //   url: 'https://api.themoviedb.org/3/movie/550/credits?api_key=4a30a8c65888c1fac2a36e456ecba9b6',
-    //   success: (movies) => {
-    //     movies.crew.map((crew) => {
-    //       if (crew.job == 'Director' || crew.job == 'Producer') {
-    //         console.log(crew);
-    //       }
-    //     });
-    //     this.setState({movies})
-    //   }
-    // });
-
     axios('/api/movies').then((movies) => {
         movies.data.map((movie)=>{
           return this.setState({

@@ -8,6 +8,12 @@ export default class Movie extends React.Component{
       editMovie: false,
       titleValue: this.props.title,
       directorValue: this.props.director,
+      castValue: this.props.cast,
+      imdbValue: this.props.imdb,
+      overviewValue: this.props.overview,
+      poster_linkValue: this.props.poster_link,
+      productionValue: this.props.production,
+      release_dateValue: this.props.release_date,
     };
 
     this.handleInputChange = this.handleInputChange.bind(this)
@@ -24,19 +30,28 @@ export default class Movie extends React.Component{
   }
 
   render(){
+    // const imdb_link = 'www.imdb.com/title/' + this.state.imdbValue;
     if(this.state.editMovie){
       // editMovie = this.props.movie;
       return(
-        <div>
-          <input type="text" placeholder="Director:" name="directorValue" value={this.state.directorValue} ref={(input) => this._director = input} onChange={this.handleInputChange}/>
-          <input type="text" placeholder="Movie:" name="titleValue" value={this.state.titleValue} ref={(input) => this._title = input} onChange={this.handleInputChange}/>
-          <button onClick={this._handleSave.bind(this)}>Save changes</button>
+        <div className="movie-block">
+          <form className="form-inline">
+            <div className="form-group">
+              <label for="title">Title</label>
+              <input type="text" className="form-control" id="title" placeholder="Movie:" name="titleValue" value={this.state.titleValue} ref={(input) => this._title = input} onChange={this.handleInputChange}/>
+            </div>
+            <div className="form-group">
+              <label for="director">Director</label>
+              <input type="text" className="form-control" id="director" placeholder="Director:" name="directorValue" value={this.state.directorValue} ref={(input) => this._director = input} onChange={this.handleInputChange}/>
+            </div>
+            <button className="btn btn-default" onClick={this._handleSave.bind(this)}>Save changes</button>
+          </form>
         </div>
       );
     } else {
       return (
         <div>
-          <h3>{this.props.title}</h3>
+          <a className="imdb_link" href='www.imdb.com/title/?' target="_blank"><h3>{this.props.title}</h3></a>
           <p>
             Directed by: {this.props.director}
           </p>
