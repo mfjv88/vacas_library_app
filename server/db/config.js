@@ -23,6 +23,14 @@ var movieSchema = new Schema({
   movie_id: {type: Number, ref: 'MovieId'},
   director: String,
   title: String,
+  cast: Array,
+  genres: Array,
+  imdb: String,
+  overview: String,
+  poster_link: String,
+  poster_path: String,
+  production: Array,
+  release_date: Date,
   created_at: Date,
   updated_at: Date
 });
