@@ -8,6 +8,14 @@ router.post('/api/movies/add', function(req, res){
   var result = {
     'director': req.body.director,
     'title': req.body.title,
+    'cast': req.body.cast,
+    'genres': req.body.genres,
+    'imdb': req.body.imdb,
+    'overview': req.body.overview,
+    'poster_link': req.body.poster_link,
+    'poster_path': req.body.poster_path,
+    'production': req.body.production,
+    'release_date': req.body.release_date,
     'movie_id': req.body.movie_id,
     'created_at': new Date(),
     'updated_at': new Date()
@@ -32,13 +40,20 @@ router.post('/api/movies/edit/:movie_id', function(req, res){
   var result = {
     'director': req.body.director,
     'title': req.body.title,
+    'cast': req.body.cast,
+    'genres': req.body.genres,
+    'imdb': req.body.imdb,
+    'overview': req.body.overview,
+    'poster_link': req.body.poster_link,
+    'poster_path': req.body.poster_path,
+    'production': req.body.production,
+    'release_date': req.body.release_date,
     'updated_at': new Date()
   };
-  Movie.findOneAndUpdate({"movie_id": req.body.movie_id}, {$set:result}, {new:true}, function (err, movie) {
+  Movie.findOneAndUpdate({"movie_id": req.body.library_id}, {$set:result}, {new:true}, function (err, movie) {
     if (err) {
       res.send(err);
     } else {
-      console.log(movie);
       res.send(movie);
     }
   });

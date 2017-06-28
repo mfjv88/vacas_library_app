@@ -7,27 +7,37 @@ import Login from './login/login';
 import { logout } from '../config/helpers'
 import { firebaseAuth } from '../config/auth'
 
-function PrivateRoute ({component: Component, authed, ...rest}) {
+function PrivateRoute ({component: Route, authed, ...rest}) {
   return (
     <Route
       {...rest}
       render={(props) => authed === true
-        ? <Component {...props} />
+        ? <Route {...props} />
         : <Redirect to={{pathname: '/login', state: {from: props.location}}} />}
     />
   )
 }
 
-function PublicRoute ({component: Component, authed, ...rest}) {
+function PublicRoute ({component: Route, authed, ...rest}) {
   return (
     <Route
       {...rest}
       render={(props) => authed === false
-        ? <Component {...props} />
+        ? <Route {...props} />
         : <Redirect to='/add_movie' />}
     />
   )
 }
+
+export const routes_path = (
+      <Router history={browserHistory}>
+        <Route path="/" component={App}>
+          <Route path="/add_movie" component={MovieFormBlock}/>
+          <Route path="/search_movie" component={SearchBarBlock}/>
+          <Route path="/login" component={Login}/>
+        </Route>
+      </Router>
+);
 
 export default class Routes extends React.Component {
 	constructor(){
@@ -70,7 +80,6 @@ export default class Routes extends React.Component {
   	)
   }
 }
-
 /*{this.state.authed
                     ? <button
                         style={{border: 'none', background: 'transparent'}}

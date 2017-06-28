@@ -5,19 +5,19 @@ const sass = require('gulp-sass');
 const postcss = require('gulp-postcss');
 const autoprefixer = require('autoprefixer');
 // const webpack = require('gulp-webpack');
-const webpack = require('webpack-stream');
+// const webpack = require('webpack-stream');
 const watch = require('gulp-watch');
 const cssnano = require('cssnano');
 
 gulp.task('default',['css'], function () {
-  return watch('./client/**', function(){
-		gulp.src('./client/assets/sass/*.sass')
+  return watch('./public/**', function(){
+	gulp.src('./public/assets/sass/*.sass')
     .pipe(sass().on('error', sass.logError))
-    .pipe(gulp.dest('./client/assets/css'));
+    .pipe(gulp.dest('./public/assets/css'));
 
-		// gulp.src('./client/index.js')
+		// gulp.src('./public/index.js')
 		// .pipe(webpack(require('./webpack.config')))
-		// .pipe(gulp.dest('./client/'));
+		// .pipe(gulp.dest('./public/'));
 	});
 });
 
@@ -26,9 +26,9 @@ gulp.task('css', function () {
         autoprefixer({browsers: ['last 5 versions']}),
         cssnano()
     ];
-    return gulp.src('./client/assets/css/*.css')
+    return gulp.src('./public/assets/css/*.css')
         .pipe(postcss(plugins))
-        .pipe(gulp.dest('./client/assets/css/'));
+        .pipe(gulp.dest('./public/assets/css/'));
 });
 
 // gulp.task('babel', function () {

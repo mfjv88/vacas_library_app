@@ -18,7 +18,7 @@ var react = require('react'),
 var renderToString = reactDomServer.renderToString,
     routerContext = reactRouter.RouterContext,
     match = reactRouter.match,
-    routes = require('../../src/components/routes');
+    routes = require('../../src/components/routes').routes_path;
 
 // Routes
 router.get('/api/movies/:movie_id', function(req, res){
@@ -43,7 +43,7 @@ router.get('*', function(req, res) {
   var htmlFilePath = path.join( __dirname, '../../build', 'index.html');
   fs.readFile(htmlFilePath, 'utf8', function(err, htmlData){
     if (err){
-      error();
+      console.error(err);
     } else {
       match({routes: routes, location: req.url}, function(error, redirectLocation, renderProps) {
         if (error) {
