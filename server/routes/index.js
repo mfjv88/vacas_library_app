@@ -7,7 +7,7 @@ var http = require('http'),
     path = require('path'),
     fs = require('fs'),
     router = require('express').Router();
-    
+
 // DB
 var Movie = require('../db/config');
 
@@ -18,7 +18,7 @@ var react = require('react'),
 var renderToString = reactDomServer.renderToString,
     routerContext = reactRouter.RouterContext,
     match = reactRouter.match,
-    routes = require('../../src/components/routes').routes_path;
+    routes = require('../../src/components/routes').Routes;
 
 // Routes
 router.get('/api/movies/:movie_id', function(req, res){

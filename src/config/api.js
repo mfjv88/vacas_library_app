@@ -1,8 +1,8 @@
-import axios from 'axios';
 import React from 'react';
+import axios from 'axios';
 import Movie from '../components/partials/movies';
 
-export default class api{
+export default class Api{
 
   constructor(){
     this.state = {
@@ -10,12 +10,12 @@ export default class api{
     }
   }
 
- _fetchMovies() {
+ _fetchMovies(callback) {
     axios('/api/movies').then((movies) => {
       movies.data.map((movie)=>{
         axios('https://api.themoviedb.org/3/search/movie?api_key=4a30a8c65888c1fac2a36e456ecba9b6&language=en-US&query=' + movie.title + '&page=1').then((first_movie) => {
           const movie_id = first_movie.data.results[0].id;
-          console.log(first_movie.data.results[0]);
+          // console.log(first_movie.data.results[0]);
           axios('https://api.themoviedb.org/3/movie/' + movie_id + '/credits?api_key=4a30a8c65888c1fac2a36e456ecba9b6').then((movie_crew) => {
             let movie_cast = [];
             let movie_production = [];
@@ -29,7 +29,7 @@ export default class api{
             }
             axios('https://api.themoviedb.org/3/movie/' + movie_id + '?api_key=4a30a8c65888c1fac2a36e456ecba9b6&language=en-US').then((movie_info) => {
               const movie_details = movie_info.data;
-              console.log(movie_details);
+              // console.log(movie_details);
               // const movie_imdb = movie_details.imdb_id;
               // const movie_title = movie_details.title;
               // const movie_runtime = movie_details.runtime;
@@ -51,9 +51,8 @@ export default class api{
                 title: movie_details.title,
                 library_id: movie.movie_id
               };
-              return this.setState({
-                movies: this.state.movies.concat([return_movie])
-              });
+              // console.log(return_movie);
+              callback(return_movie);
             });
           });
         });
@@ -61,7 +60,40 @@ export default class api{
     });
   }
 
-   _saveEdit(title, previousData) {
+    _getMovies(movies) {
+    return movies.map((movie) => {
+      return(
+        <Movie
+          movie={movie}
+          cast={movie.cast}
+          imdb={movie.imdb}
+          overview={movie.overview}
+          poster_link={movie.poster_link}
+          production={movie.production}
+          release_date={movie.release_date}
+          title={movie.title}
+          genres={movie.genres}
+          library_id={movie.library_id}
+          key={movie.movie_id}
+          onDelete={this._deleteMovie.bind(this)}
+          onSave={this._saveEdit.bind(this)}/>
+      )
+    });
+  }
+
+
+  _getMoviesTitle(movieCount) {
+    if(movieCount === 0){
+      return 'No movies in list YET!'
+    } else if (movieCount === 1) {
+      return '1 movie in list'
+    } else {
+      return `${movieCount} movies in list`
+    }
+  }
+
+
+   _saveEdit(title, previousData, callback) {
     const library_id = previousData.library_id;
 
     axios('https://api.themoviedb.org/3/search/movie?api_key=4a30a8c65888c1fac2a36e456ecba9b6&language=en-US&query=' + title + '&page=1').then((first_movie) => {
@@ -102,17 +134,21 @@ export default class api{
                 method: 'post',
                 url: `/api/movies/edit/${library_id}`,
                 data: return_movie
-              }).then((updatedMovie) => {
-                  const movies = [...this.state.movies];
-                  const movieIndex = movies.indexOf(previousData);
-                  movies[movieIndex] = updatedMovie.data;
-
-                  this.setState({movies});
+              }).then((updatedMovie)=>{
+                callback(updatedMovie, previousData);
               });
             });
           });
         });
   }
+
+// (updatedMovie) => {
+//                   const movies = [...this.state.movies];
+//                   const movieIndex = movies.indexOf(previousData);
+//                   movies[movieIndex] = updatedMovie.data;
+
+//                   this.setState({movies});
+//               });
 
   _deleteMovie(movie) {
     axios.delete(`/api/movies/delete/${movie.movie_id}`);
@@ -170,38 +206,6 @@ _addMovie(title){
             });
           });
         });
-  }
-
-  _getMovies() {
-    return this.state.movies.map((movie) => {
-      return(
-        <Movie
-          movie={movie}
-          cast={movie.cast}
-          imdb={movie.imdb}
-          overview={movie.overview}
-          poster_link={movie.poster_link}
-          production={movie.production}
-          release_date={movie.release_date}
-          title={movie.title}
-          genres={movie.genres}
-          library_id={movie.library_id}
-          key={movie.movie_id}
-          onDelete={this._deleteMovie.bind(this)}
-          onSave={this._saveEdit.bind(this)}/>
-      )
-    });
-  }
-
-
-  _getMoviesTitle(movieCount) {
-    if(movieCount === 0){
-      return 'No movies in list YET!'
-    } else if (movieCount === 1) {
-      return '1 movie in list'
-    } else {
-      return `${movieCount} movies in list`
-    }
   }
 
   _search(query){

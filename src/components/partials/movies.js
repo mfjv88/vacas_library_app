@@ -2,24 +2,24 @@ import React from 'react';
 import {Modal, Button} from 'react-bootstrap';
 
 export default class Movie extends React.Component{
-  constructor(props){
-    super(props);
-
-    this.state = {
-      showModal: false,
-      editMovie: false,
-      titleValue: this.props.title,
-      castValue: this.props.cast,
-      imdbValue: this.props.imdb,
-      genresValue: this.props.genres,
-      overviewValue: this.props.overview,
-      poster_linkValue: this.props.poster_link,
-      productionValue: this.props.production,
-      release_dateValue: this.props.release_date,
-      library_id: this.props.library_id
-    };
-    this.handleInputChange = this.handleInputChange.bind(this)
-  }
+  // constructor(props){
+  //   super(props);
+  //
+  //   this.state = {
+  //     showModal: false,
+  //     editMovie: false,
+  //     titleValue: this.props.title,
+  //     castValue: this.props.cast,
+  //     imdbValue: this.props.imdb,
+  //     genresValue: this.props.genres,
+  //     overviewValue: this.props.overview,
+  //     poster_linkValue: this.props.poster_link,
+  //     productionValue: this.props.production,
+  //     release_dateValue: this.props.release_date,
+  //     library_id: this.props.library_id
+  //   };
+  //   this.handleInputChange = this.handleInputChange.bind(this)
+  // }
 
   _getCast(){
     return this.state.castValue.map((cast)=>{
@@ -58,6 +58,7 @@ export default class Movie extends React.Component{
   }
 
   render(){
+    console.log(this.props);
     const imdb_link = 'http://www.imdb.com/title/' + this.state.imdbValue;
     const production = this.state.productionValue;
     let director;

@@ -67,9 +67,7 @@ app.get('/api/movies/counter/reset', resetRoutes);
 app.use(function(err, req, res, next){
   res.status(err.status || 500);
 });
-
 // LISTENING TO SERVER
 app.listen(port, function(){
   console.log('running at localhost:' + port);
 });
-
