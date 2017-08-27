@@ -40,7 +40,6 @@ export default class Movie extends React.Component{
   }
 
   _getGenres(){
-    console.log(this.state.genresValue);
     return this.state.genresValue.map((genre)=>{
       return (
         <li>{genre.name}</li>

@@ -49,9 +49,9 @@ _getMovies() {
  _saveEdit(title, previousData) {
     const library_id = previousData.library_id;
 
-    axios('https://api.themoviedb.org/3/search/movie?api_key='+ process.env.MOVIEDB_APIKEY +'&language=en-US&query=' + title + '&page=1').then((first_movie) => {
+    axios('https://api.themoviedb.org/3/search/movie?api_key='+ '4a30a8c65888c1fac2a36e456ecba9b6' +'&language=en-US&query=' + title + '&page=1').then((first_movie) => {
           const movie_id = first_movie.data.results[0].id;
-          axios('https://api.themoviedb.org/3/movie/' + movie_id + '/credits?api_key='+ process.env.MOVIEDB_APIKEY).then((movie_crew) => {
+          axios('https://api.themoviedb.org/3/movie/' + movie_id + '/credits?api_key='+ '4a30a8c65888c1fac2a36e456ecba9b6').then((movie_crew) => {
             let movie_cast = [];
             let movie_production = [];
             for (let i = 0; i < 5; i++) {
@@ -62,7 +62,7 @@ _getMovies() {
                 movie_production.push(movie_crew.data.crew[j]);
               }
             }
-            axios('https://api.themoviedb.org/3/movie/' + movie_id + '?api_key='+ process.env.MOVIEDB_APIKEY +'&language=en-US').then((movie_info) => {
+            axios('https://api.themoviedb.org/3/movie/' + movie_id + '?api_key='+ '4a30a8c65888c1fac2a36e456ecba9b6' +'&language=en-US').then((movie_info) => {
               const movie_details = movie_info.data;
               const movie_imdb = movie_details.imdb_id;
               const movie_title = movie_details.title;
@@ -105,9 +105,9 @@ _getMovies() {
     });
     axios(`/api/search/${query}`).then((movies)=>{
       movies.data.map((movie)=>{
-        axios('https://api.themoviedb.org/3/search/movie?api_key='+ process.env.MOVIEDB_APIKEY +'&language=en-US&query=' + movie.title + '&page=1').then((first_movie) => {
+        axios('https://api.themoviedb.org/3/search/movie?api_key='+ '4a30a8c65888c1fac2a36e456ecba9b6' +'&language=en-US&query=' + movie.title + '&page=1').then((first_movie) => {
           const movie_id = first_movie.data.results[0].id;
-          axios('https://api.themoviedb.org/3/movie/' + movie_id + '/credits?api_key='+ process.env.MOVIEDB_APIKEY).then((movie_crew) => {
+          axios('https://api.themoviedb.org/3/movie/' + movie_id + '/credits?api_key='+ '4a30a8c65888c1fac2a36e456ecba9b6').then((movie_crew) => {
             let movie_cast = [];
             let movie_production = [];
             for (let i = 0; i < 5; i++) {
@@ -118,7 +118,7 @@ _getMovies() {
                 movie_production.push(movie_crew.data.crew[j]);
               }
             }
-            axios('https://api.themoviedb.org/3/movie/' + movie_id + '?api_key='+ process.env.MOVIEDB_APIKEY +'&language=en-US').then((movie_info) => {
+            axios('https://api.themoviedb.org/3/movie/' + movie_id + '?api_key='+ '4a30a8c65888c1fac2a36e456ecba9b6' +'&language=en-US').then((movie_info) => {
               console.log(movie_info);
               const movie_details = movie_info.data;
               const movie_imdb = movie_details.imdb_id;

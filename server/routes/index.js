@@ -7,7 +7,7 @@ var http = require('http'),
     path = require('path'),
     fs = require('fs'),
     router = require('express').Router();
-    
+
 // DB
 var Movie = require('../db/config');
 
