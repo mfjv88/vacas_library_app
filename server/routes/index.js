@@ -18,7 +18,7 @@ var react = require('react'),
 var renderToString = reactDomServer.renderToString,
     routerContext = reactRouter.RouterContext,
     match = reactRouter.match,
-    routes = require('../../src/components/routes').default();
+    routes = require('../../src/components/routes').routes;
 
 // Routes
 router.get('/api/movies/:movie_id', function(req, res){
